@@ -373,4 +373,49 @@ whitelist harus diletakkan sebelum http_port, alhasil jika tidak, akan error
 <img width="959" alt="image" src="https://user-images.githubusercontent.com/64743796/200893511-8ef78e09-4673-465f-9554-8630204a85d5.png">
 
 
+## 10
+
+> Saat akses internet dibuka, client dilarang untuk mengakses web tanpa HTTPS. (Contoh web HTTP: http://example.com)
+
+- untuk ini, kita harus membuat acl untuk port https, yaitu 443 dan 563
+```
+acl SSL_ports port 443 563
+```
+
+- dan aturan ini kita AND dengan jam kerja yang sudah ada
+
+```
+include /etc/squid/acl.conf
+acl CONNECT method CONNECT
+acl SSL_ports port 443 563
+
+acl whitelist dstdomain .loid-work.com .franky-work.com
+
+http_access allow whitelist
+
+http_port 8080
+visible_hostname Berlint
+
+http_access allow CONNECT AVAILABLE_WORKING_1 SSL_ports
+http_access allow CONNECT AVAILABLE_WORKING_2 SSL_ports
+http_access allow CONNECT AVAILABLE_WORKING_3 SSL_ports
+
+http_access deny all
+```
+
+- lakukan restart pada squid
+`service squid restart`
+
+- Kita testing pada SSS
+pada `Wed Nov  9 17:42:18 UTC 2022`
+<img width="315" alt="image" src="https://user-images.githubusercontent.com/64743796/200902120-b918e95a-14ef-4a41-9022-188351cbda3b.png">
+
+dan kita `lynx http://example.com`
+
+<img width="587" alt="image" src="https://user-images.githubusercontent.com/64743796/200902237-313db6d1-9c25-4ec1-903b-27e6ba8b6b1c.png">
+
+namun jika kita `lynx https://its.ac.id`
+
+<img width="571" alt="image" src="https://user-images.githubusercontent.com/64743796/200902363-8af80b1e-7a16-4151-a2dc-49516187e3a0.png">
+
 
