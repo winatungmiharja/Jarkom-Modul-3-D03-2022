@@ -56,3 +56,30 @@ apt-get install squid -y
 
 ![image](https://user-images.githubusercontent.com/64743796/200801617-8c0d6c7f-68df-4c2c-9801-b688aa545cf8.png)
 
+## 2
+
+> Ostania sebagai DHCP Relay
+
+```
+apt-get update
+apt-get install isc-dhcp-relay -y
+```
+
+disini kita akan melakukan forward DHCP server dari IP `192.186.2.4` karena Westalis memiliki IP address tersebut
+dan sesuai topologi, kita juga akan melakukan forward pada `eth1 eth2 eth3`
+
+ketika melakukan instalasi `isc-dhcp-relay`, kita akan ditanya untuk konfigurasi tersebut, atau kita bisa melakukan pengeditan pada `/etc/default/isc-dhcp-relay`
+
+```
+nano /etc/default/isc-dhcp-relay
+```
+
+<img width="480" alt="image" src="https://user-images.githubusercontent.com/64743796/200832328-bef1ecba-07b2-4ba9-8918-950ed63314e2.png">
+
+
+lalu kita akan memulai relay dengan command
+
+```
+service isc-dhcp-relay start
+```
+
