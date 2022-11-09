@@ -232,3 +232,43 @@ dapat kita lihat, hasil IP address sesuai dengan yang kita konfigurasikan. yaitu
 
 <img width="960" alt="image" src="https://user-images.githubusercontent.com/64743796/200845009-83e33bfd-70af-4605-85ab-771bf098d778.png">
 
+## 7
+
+> Loid dan Franky berencana menjadikan Eden sebagai server untuk pertukaran informasi dengan alamat IP yang tetap dengan IP [prefix IP].3.13
+
+pertama, kita mengambil hwaddress milik Eden dengan `ip a`
+
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/64743796/200850674-85a175e0-7286-4545-8717-6ad1f4185ade.png">
+
+dapat dilihat bahwa hwadress = `ee:cf:43:2c:69:72`
+
+lalu kita menambahkan konfigurasi berikut pada `/etc/dhcp/dhcpd.conf` (Westails)
+
+```
+host Eden {
+    hardware ethernet ee:cf:43:2c:69:72;
+    fixed-address 192.186.3.13;
+}
+```
+
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/64743796/200854201-982b0978-9cfd-4cf4-a4f0-57304bdccd3d.png">
+
+<img width="517" alt="image" src="https://user-images.githubusercontent.com/64743796/200854356-3200fcd5-9b65-4bd2-83c0-7e6c2a69982b.png">
+
+setelah itu, kita menambahkan konfigurasi node eden menjadi seperti berikut
+
+```
+auto eth0
+iface eth0 inet dhcp
+hwaddress ether ee:cf:43:2c:69:72
+```
+
+![image](https://user-images.githubusercontent.com/64743796/200851795-9189aef4-1277-4601-ae8a-ecf95f80ee59.png)
+
+lalu kita stop dan start node Eden. Setelah itu, kita melakukan query `ip a` pada terminal Eden, maka dapat dilihat, bahwa IP Eden sekarang menjadi Fixed Ip sesuai yang kita setting sebelumnya
+
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/64743796/200854521-62401cce-5f60-41b9-b18d-340ab75ed5df.png">
+
+
+
+
