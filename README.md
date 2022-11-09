@@ -1,3 +1,5 @@
+# DHCP
+
 ## 1
 
 > Loid bersama Franky berencana membuat peta tersebut dengan kriteria WISE sebagai DNS Server, Westalis sebagai DHCP Server, Berlint sebagai Proxy Server
@@ -269,6 +271,48 @@ lalu kita stop dan start node Eden. Setelah itu, kita melakukan query `ip a` pad
 
 <img width="960" alt="image" src="https://user-images.githubusercontent.com/64743796/200854521-62401cce-5f60-41b9-b18d-340ab75ed5df.png">
 
+# Proxy Server
+
+## Setup
+
+> Pada Proxy Server di Berlint, Loid berencana untuk mengatur bagaimana Client dapat mengakses internet. Artinya setiap client harus menggunakan Berlint sebagai HTTP & HTTPS proxy. Adapun kriteria pengaturannya adalah sebagai berikut:
+
+kami menggunakan port 8080 karena pada soal tidak sidpesifikasikan
+
+```
+http_port 8080
+visible_hostname Berlint
+```
+
+<img width="943" alt="image" src="https://user-images.githubusercontent.com/64743796/200872224-37fc5a76-deb9-4cab-8e35-720dc26d1a3d.png">
 
 
+> Loid dan Franky berencana menjadikan Eden sebagai server untuk pertukaran informasi dengan alamat IP yang tetap dengan IP [prefix IP].3.13 (7). SSS, Garden, dan Eden digunakan sebagai client Proxy agar pertukaran informasi dapat terjamin keamanannya, juga untuk mencegah kebocoran data.
+
+melakukan stop dan start pada node-node yang terhubung dengan Switch1 dan Switch3
+
+kemudian kita menjalankan script berikut pada SSS, Garden, dan Eden
+
+```
+export http_proxy="http://192.186.2.3:8080"
+env | grep -i proxy
+```
+
+<img width="461" alt="image" src="https://user-images.githubusercontent.com/64743796/200874475-a26b9bd4-5d5e-494f-ba8d-ef19798f2ca9.png">
+
+<img width="462" alt="image" src="https://user-images.githubusercontent.com/64743796/200874360-0f43d263-4d82-40c5-95c6-b2e571cdd5f4.png">
+
+<img width="461" alt="image" src="https://user-images.githubusercontent.com/64743796/200874432-06d2e83e-7fec-41b2-b30c-45a694b2b849.png">
+
+- lalu disini kita mencoba melakukan lynx, namun masih error, jadi kita harus menambbahkan allow all http pada config squid
+
+<img width="231" alt="image" src="https://user-images.githubusercontent.com/64743796/200885257-a3805b8d-8bf5-4ce0-a25c-70e9cb423a89.png">
+
+
+<img width="649" alt="image" src="https://user-images.githubusercontent.com/64743796/200885172-5c2d7f18-87f7-4b7b-a8c0-e310d2c47fc0.png">
+
+
+## 8
+
+> Client hanya dapat mengakses internet diluar (selain) hari & jam kerja (senin-jumat 08.00 - 17.00) dan hari libur (dapat mengakses 24 jam penuh)
 
