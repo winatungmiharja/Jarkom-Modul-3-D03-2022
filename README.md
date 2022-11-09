@@ -316,3 +316,61 @@ env | grep -i proxy
 
 > Client hanya dapat mengakses internet diluar (selain) hari & jam kerja (senin-jumat 08.00 - 17.00) dan hari libur (dapat mengakses 24 jam penuh)
 
+*/etc/squid/acl.conf*
+
+```
+acl AVAILABLE_WORKING_1 time MTWHF 00:00-07:59
+acl AVAILABLE_WORKING_2 time MTWHF 17:01-24:00
+acl AVAILABLE_WORKING_3 time SA 00:00-24:00
+```
+
+*/etc/squid/squid.conf*
+
+```
+include /etc/squid/acl.conf
+
+http_port 8080
+visible_hostname Berlint
+
+http_access allow AVAILABLE_WORKING_1
+http_access allow AVAILABLE_WORKING_2
+http_access allow AVAILABLE_WORKING_3
+
+http_access deny all
+```
+
+- Mari kita coba pada server SSS
+
+pada `Wed Nov  9 16:40:45 UTC 2022`
+
+<img width="457" alt="image" src="https://user-images.githubusercontent.com/64743796/200888828-f1ca9343-04be-49d2-85d6-f557a2ade39f.png">
+
+<img width="548" alt="image" src="https://user-images.githubusercontent.com/64743796/200889119-72f16060-6a6e-4af2-a71c-6e4ea2002a7e.png">
+
+Pada `Wed Nov  9 17:03:49 UTC 2022`
+
+<img width="472" alt="image" src="https://user-images.githubusercontent.com/64743796/200894265-67ed2ee5-8ace-42db-b98e-c1d6968aae54.png">
+
+<img width="573" alt="image" src="https://user-images.githubusercontent.com/64743796/200894485-9dd8e536-61f9-4315-8e3e-bcca6eefbc31.png">
+
+## 9
+
+> Adapun pada hari dan jam kerja sesuai nomor (1), client hanya dapat mengakses domain loid-work.com dan franky-work.com (IP tujuan domain dibebaskan)
+
+kita menambahkan whitelist dengan menambah pada squid.conf
+
+```
+acl whitelist dstdomain .loid-work.com .franky-work.com
+http_access allow whitelist
+```
+
+whitelist harus diletakkan sebelum http_port, alhasil jika tidak, akan error
+
+- disini seharusnya termasuk Jam Kerja dimana Client tidak bisa mengakses, namun setelah ditambahkannya whitelist, maka bisa diakses meskpun jam kerja
+
+<img width="465" alt="image" src="https://user-images.githubusercontent.com/64743796/200893579-914acb86-6515-4ade-9a16-bd04de871d99.png">
+
+<img width="959" alt="image" src="https://user-images.githubusercontent.com/64743796/200893511-8ef78e09-4673-465f-9554-8630204a85d5.png">
+
+
+
