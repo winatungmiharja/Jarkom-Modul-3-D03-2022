@@ -83,3 +83,152 @@ lalu kita akan memulai relay dengan command
 service isc-dhcp-relay start
 ```
 
+## 3
+
+> Semua client yang ada HARUS menggunakan konfigurasi IP dari DHCP Server
+
+client yang ada yaitu SSS, Garden, Eden, NewstonCastle, KemonoPark
+
+oleh karena itu, kita harus mengubah konfigurasi IP statis menjadi konfigurasi IP DHCP dengan menggunakan script berikut
+
+```
+auto eth0
+iface eth0 inet dhcp
+```
+
+lalu kita stop semua server yang bersangkutan melalui gns3, akan kita start lagi setelah konfigurasi DHCP diperbarui
+
+<img width="958" alt="image" src="https://user-images.githubusercontent.com/64743796/200838266-19cfd10c-f3ca-4e45-b363-ca525325fccf.png">
+
+> Client yang melalui Switch1 mendapatkan range IP dari [prefix IP].1.50 - [prefix IP].1.88 dan [prefix IP].1.120 - [prefix IP].1.155
+
+maka konfigurasi DHCP kita menjadi
+
+```
+subnet 192.186.1.0 netmask 255.255.255.0 {
+    range 192.186.1.50 192.186.1.88;
+    range 192.186.1.120 192.186.1.155;
+    ...
+}
+```
+
+## 4
+
+> Client yang melalui Switch3 mendapatkan range IP dari [prefix IP].3.10 - [prefix IP].3.30 dan [prefix IP].3.60 - [prefix IP].3.85
+
+maka konfigurasi DHCP kita menjadi
+
+```
+subnet 192.186.3.0 netmask 255.255.255.0 {
+    range 192.186.3.10 192.186.3.30;
+    range 192.186.3.60 192.186.3.85;
+    ...
+}
+```
+
+## 5
+
+> Client mendapatkan DNS dari WISE dan client dapat terhubung dengan internet melalui DNS tersebut.
+
+WISE memiliki alamat `192.186.2.2`
+
+maka konfigurasi DHCP kita menjadi
+
+```
+subnet 192.186.1.0 netmask 255.255.255.0 {
+    ...
+    option domain-name-servers 192.186.2.2;
+    ...
+}
+
+subnet 192.186.3.0 netmask 255.255.255.0 {
+    ...
+    option domain-name-servers 192.186.2.2;
+    ...
+}
+```
+
+## 6
+
+> Lama waktu DHCP server meminjamkan alamat IP kepada Client yang melalui Switch1 selama 5 menit sedangkan pada client yang melalui Switch3 selama 10 menit. Dengan waktu maksimal yang dialokasikan untuk peminjaman alamat IP selama 115 menit.
+
+maka konfigurasi DHCP kita menjadi
+
+
+```
+subnet 192.186.1.0 netmask 255.255.255.0 {
+    ...
+    default-lease-time 300;
+    max-lease-time 6900;
+}
+
+subnet 192.186.3.0 netmask 255.255.255.0 {
+    ...
+    default-lease-time 600;
+    max-lease-time 6900;
+}
+```
+
+jadi konfigurasi DHCP pada `Westails` akan kita ubah
+
+*Westails*
+```
+nano /etc/dhcp/dhcpd.conf
+```
+
+lalu kita ganti isinya menjadi 
+
+```
+subnet 192.186.1.0 netmask 255.255.255.0 {
+    range 192.186.1.50 192.186.1.88;
+    range 192.186.1.120 192.186.1.155;
+    option routers 192.186.1.1;
+    option broadcast-address 192.186.1.255;
+    option domain-name-servers 192.186.2.2;
+    default-lease-time 300;
+    max-lease-time 6900;
+}
+
+subnet 192.186.3.0 netmask 255.255.255.0 {
+    range 192.186.3.10 192.186.3.30;
+    range 192.186.3.60 192.186.3.85;
+    option routers 192.186.3.1;
+    option broadcast-address 192.186.3.255;
+    option domain-name-servers 192.186.2.2;
+    default-lease-time 600;
+    max-lease-time 6900;
+}
+
+subnet 192.186.2.0 netmask 255.255.255.0 {
+    option routers 192.186.2.1;
+}
+```
+
+setelah itu kita restart server DHCP
+
+<img width="325" alt="image" src="https://user-images.githubusercontent.com/64743796/200844326-e22b364d-91ea-4fc3-a3d8-357ecf353d77.png">
+
+setelah semuanya selesai, kita akan start semua node yang kita stop sebelumnya
+
+dapat kita lihat, hasil IP address sesuai dengan yang kita konfigurasikan. yaitu sebagai berikut
+
+- SSS
+
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/64743796/200844736-c6d35cbf-655d-4713-b325-167b07b8739b.png">
+
+- Garden
+
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/64743796/200844817-bd76cbfe-f68e-4b29-ad78-3473358c2912.png">
+
+- Eden
+
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/64743796/200844879-42f1fac5-fa99-4db9-a1e8-96e26b730b54.png">
+
+- NewstonCastle
+
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/64743796/200844947-b63e6fde-511e-4f81-bad2-c24b0c0c6de7.png">
+
+- KemonoPark
+
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/64743796/200845009-83e33bfd-70af-4605-85ab-771bf098d778.png">
+
