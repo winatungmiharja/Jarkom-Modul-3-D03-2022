@@ -4,7 +4,8 @@
 
 > Loid bersama Franky berencana membuat peta tersebut dengan kriteria WISE sebagai DNS Server, Westalis sebagai DHCP Server, Berlint sebagai Proxy Server
 
-![image](https://user-images.githubusercontent.com/64743796/200801000-4e71533c-afd8-4e77-ae2d-7bc163cc5506.png)
+<img width="843" alt="Screenshot 2022-11-15 at 4 16 09 PM" src="https://user-images.githubusercontent.com/57696730/201879600-43790130-e85d-4cc9-a23c-c25b3ecddaa0.png">  
+
 
 
 A. WISE sebagai DNS Server
@@ -27,8 +28,8 @@ nano /etc/dhcp/dhcpd.conf
 karena `Westalis` terdapat pada subnet 2
 
 ```
-subnet 192.200.2.0 netmask 255.255.255.0 {
-        option routers 192.200.2.1;
+subnet 192.186.2.0 netmask 255.255.255.0 {
+        option routers 192.186.2.1;
 }
 ```
 <img width="481" alt="image" src="https://user-images.githubusercontent.com/64743796/200829574-9236510e-a6d8-4494-bf20-4b72fcb236aa.png">
@@ -255,6 +256,9 @@ host Eden {
 
 <img width="960" alt="image" src="https://user-images.githubusercontent.com/64743796/200854201-982b0978-9cfd-4cf4-a4f0-57304bdccd3d.png">
 
+lakukan restart  
+```service isc-dhcp-server restart```  
+
 <img width="517" alt="image" src="https://user-images.githubusercontent.com/64743796/200854356-3200fcd5-9b65-4bd2-83c0-7e6c2a69982b.png">
 
 setelah itu, kita menambahkan konfigurasi node eden menjadi seperti berikut
@@ -284,6 +288,11 @@ http_port 8080
 visible_hostname Berlint
 ```
 
+Lakukan restart squid  
+```
+service squid restart
+```  
+
 <img width="943" alt="image" src="https://user-images.githubusercontent.com/64743796/200872224-37fc5a76-deb9-4cab-8e35-720dc26d1a3d.png">
 
 
@@ -305,6 +314,11 @@ env | grep -i proxy
 <img width="461" alt="image" src="https://user-images.githubusercontent.com/64743796/200874432-06d2e83e-7fec-41b2-b30c-45a694b2b849.png">
 
 - lalu disini kita mencoba melakukan lynx, namun masih error, jadi kita harus menambbahkan allow all http pada config squid
+- jangan lupa untuk menginstall lynx terlebih dahulu
+```
+apt-get update
+apt-get install lynx
+```  
 
 <img width="231" alt="image" src="https://user-images.githubusercontent.com/64743796/200885257-a3805b8d-8bf5-4ce0-a25c-70e9cb423a89.png">
 
@@ -417,5 +431,47 @@ dan kita `lynx http://example.com`
 namun jika kita `lynx https://its.ac.id`
 
 <img width="571" alt="image" src="https://user-images.githubusercontent.com/64743796/200902363-8af80b1e-7a16-4151-a2dc-49516187e3a0.png">
+
+## 11
+> Agar menghemat penggunaan, akses internet dibatasi dengan kecepatan maksimum 128 Kbps pada setiap host (Kbps = kilobit per second; lakukan pengecekan pada tiap host, ketika 2 host akses internet pada saat bersamaan, keduanya mendapatkan speed maksimal yaitu 128 Kbps)  
+
+- Buat file bernama ```acl-bandwidth.conf``` di folder squid
+```
+nano /etc/squid/acl-bandwidth.conf
+```  
+- Masukkan script berikut
+```
+delay_pools 1
+delay_class 1 1
+delay_access 1 allow all
+delay_parameters 1 16000/16000
+``` 
+
+- Ubah konfigurasi pada file squid.conf menjadi:  
+```
+include /etc/squid/acl-bandwidth.conf
+http_port 8080
+visible_hostname Berlint
+
+http_access allow all
+```  
+ - Restart Squid
+```
+service squid restart
+```  
+ 
+ - Speed test :  
+![Screenshot 2022-11-15 at 5 54 48 PM](https://user-images.githubusercontent.com/57696730/201902616-e62ddd53-3163-4feb-a4ba-22a6a39d111f.png)
+
+## 12
+> Setelah diterapkan, ternyata peraturan nomor (4) mengganggu produktifitas saat hari kerja, dengan demikian pembatasan kecepatan hanya diberlakukan untuk pengaksesan internet pada hari libur
+
+Tambahkan
+```
+acl OPEN_TIME time MTWHF
+```  
+di ```/etc/squid/acl-bandwidth.conf```  
+di edit saat masa revisi (Senin) jadi tidak bisa testing pada hari libur, sementara speedtest seperti diatas
+
 
 
