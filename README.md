@@ -466,11 +466,30 @@ service squid restart
 ## 12
 > Setelah diterapkan, ternyata peraturan nomor (4) mengganggu produktifitas saat hari kerja, dengan demikian pembatasan kecepatan hanya diberlakukan untuk pengaksesan internet pada hari libur
 
-Tambahkan
+Ubah di ```/etc/squid/squid.conf```  
 ```
-acl OPEN_TIME time MTWHF
+include /etc/squid/acl.conf
+
+acl CONNECT method CONNECT
+acl SSL_ports port 443 563
+
+acl whitelist dstdomain .loid-work.com .franky-work.com
+http_access allow whitelist
+http_port 8080
+visible_hostname Berlint
+
+http_access allow AVAILABLE_WORKING_1
+http_access allow AVAILABLE_WORKING_2
+http_access allow AVAILABLE_WORKING_3
+
+http_access deny all
+acl LIMIT_ACCESS time MTWHF
+delay_pools 1
+delay_class 1 1
+delay_access 1 allow all !LIMIT_ACCESS
+delay_parameters 1 16000/16000
 ```  
-di ```/etc/squid/acl-bandwidth.conf```  
+
 di edit saat masa revisi (Senin) jadi tidak bisa testing pada hari libur, sementara speedtest seperti diatas
 
 
