@@ -1,3 +1,35 @@
+# Jarkom-Modul-3-D03-2022
+
+### Kelompok D03
+
+| **No** | **Nama**                   | **NRP**    |
+| ------ | -------------------------- | ---------- |
+| 1      | Antonio Taifan Montana     | 5025201219 |
+| 2      | Wina Tungmiharja           | 5025201242 |
+| 3      | Vania Rizky Juliana Wachid | 5025201215 |
+
+```PREFIX IP Kelompok = 192.186```  
+
+### Direktori Jawaban
+
+<details>
+  <summary>Expand</summary>
+  
+ 1. [Nomor 1](https://github.com/winatungmiharja/Jarkom-Modul-3-D03-2022/#1)
+ 2. [Nomor 2](https://github.com/winatungmiharja/Jarkom-Modul-3-D03-2022/#2)
+ 3. [Nomor 3](https://github.com/winatungmiharja/Jarkom-Modul-3-D03-2022/#3)
+ 4. [Nomor 4](https://github.com/winatungmiharja/Jarkom-Modul-3-D03-2022/#4)
+ 5. [Nomor 5](https://github.com/winatungmiharja/Jarkom-Modul-3-D03-2022/#5)
+ 6. [Nomor 6](https://github.com/winatungmiharja/Jarkom-Modul-3-D03-2022/#6)
+ 7. [Nomor 7](https://github.com/winatungmiharja/Jarkom-Modul-3-D03-2022/#7)
+ 8. [Nomor 8](https://github.com/winatungmiharja/Jarkom-Modul-3-D03-2022/#8)
+ 9. [Nomor 9](https://github.com/winatungmiharja/Jarkom-Modul-3-D03-2022/#9)
+ 10. [Nomor 10](https://github.com/winatungmiharja/Jarkom-Modul-3-D03-2022/#10)
+ 11. [Nomor 11](https://github.com/winatungmiharja/Jarkom-Modul-3-D03-2022/#11)
+ 12. [Nomor 12](https://github.com/winatungmiharja/Jarkom-Modul-3-D03-2022/#12)
+ 
+</details>
+
 # DHCP
 
 ## 1
@@ -282,6 +314,7 @@ lalu kita stop dan start node Eden. Setelah itu, kita melakukan query `ip a` pad
 > Pada Proxy Server di Berlint, Loid berencana untuk mengatur bagaimana Client dapat mengakses internet. Artinya setiap client harus menggunakan Berlint sebagai HTTP & HTTPS proxy. Adapun kriteria pengaturannya adalah sebagai berikut:
 
 kami menggunakan port 8080 karena pada soal tidak sidpesifikasikan
+`nano /etc/squid/squid.conf`
 
 ```
 http_port 8080
